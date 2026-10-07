@@ -63,7 +63,12 @@ def index():
 
 @app.get("/api/health")
 def health():
-    return jsonify(ok=True, horizons=list(A.HORIZONS))
+    return jsonify(ok=True, horizons=list(A.HORIZONS), yfinance=getattr(A.yf, "__version__", "?"))
+
+
+def fail(e, msg):
+    app.logger.exception(msg)                  # full traceback appears in the terminal running app.py
+    return jsonify(error="%s: %s: %s" % (msg, type(e).__name__, str(e)[:200])), 502
 
 
 @app.get("/api/stock")
@@ -80,28 +85,35 @@ def stock():
         return jsonify(A.analyze_single(t, qty, horizon()))
     except LookupError as e:
         return jsonify(error=str(e)), 404
-    except Exception:
-        return jsonify(error="The market data provider did not respond. Try again shortly."), 502
+    except Exception as e:
+        return fail(e, "Market data lookup failed")
+
+
+def run_portfolio():
+    res = A.analyze_portfolio(read_upload(), horizon())
+    if not res["holdings"]:
+        raise RuntimeError("No holdings could be analyzed. " + "; ".join(res["skipped"][:3]))
+    return res
 
 
 @app.post("/api/portfolio")
 def portfolio():
     try:
-        return jsonify(A.to_json(A.analyze_portfolio(read_upload(), horizon())))
+        return jsonify(A.to_json(run_portfolio()))
     except ValueError as e:
         return jsonify(error=str(e)), 400
-    except Exception:
-        return jsonify(error="Could not read that file or reach the market data provider."), 502
+    except Exception as e:
+        return fail(e, "Portfolio analysis failed")
 
 
 @app.post("/api/export")
 def export():
     try:
-        data = A.to_workbook(A.analyze_portfolio(read_upload(), horizon()))
+        data = A.to_workbook(run_portfolio())
     except ValueError as e:
         return jsonify(error=str(e)), 400
-    except Exception:
-        return jsonify(error="Could not build the report."), 502
+    except Exception as e:
+        return fail(e, "Report failed")
     return send_file(io.BytesIO(data), as_attachment=True, download_name="stocks_output.xlsx", mimetype=XLSX)
 
 

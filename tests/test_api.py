@@ -27,6 +27,23 @@ class Fake:
 A.yf.Ticker = Fake
 
 
+class Sparse(Fake):
+    """yfinance returning an almost empty info dict, as happens when Yahoo throttles."""
+    def __init__(self, t):
+        super().__init__(t)
+        self.info = {"trailingPegRatio": None}
+        self.fast_info = {"last_price": 50.0}
+        idx = pd.DatetimeIndex([pd.Timestamp.now(tz="America/New_York") - pd.Timedelta(days=d) for d in (270, 180, 90, 5)])
+        self.dividends = pd.Series([0.5] * 4, index=idx)
+
+
+def test_sparse():
+    A._cache.clear(); A.yf.Ticker = Sparse
+    s = A.analyze_single("ZZZ", 100, "weekly")
+    assert s["Price"] == 50.0 and s["Dividend"]["Annual Dividend / Share"] == 2.0 and s["calls"], s
+    A._cache.clear(); A.yf.Ticker = Fake
+
+
 def test_all():
     s = A.analyze_single("KO", 200, "monthly")
     assert s["calls"][0]["Days"] == 30 and s["Contracts"] == 2 and s["Dividend"]["Dividend Yield %"] == 4.0 and s["Price"] == 50.0
@@ -54,6 +71,7 @@ def test_all():
     bom = io.BytesIO("\ufeffTicker,Quantity\nKO,100\n".encode("utf-8"))
     assert c.post("/api/portfolio", data={"file": (bom, "b.csv")}, content_type="multipart/form-data").status_code == 200
     assert c.get("/api/health", headers={"Origin": "http://localhost:8080"}).headers["Access-Control-Allow-Origin"] == "http://localhost:8080"
+    test_sparse()
     print("all tests passed")
 
 

@@ -36,3 +36,9 @@ Limits: 60 rows per upload, 2 MB files, 30 API requests per minute per IP. Marke
 `sudo bash deploy.sh` installs this API into `/opt/stockhub-api`, runs it with gunicorn as the `stockhub-api` systemd service on 127.0.0.1:8000, and nginx proxies `/api/` to it.
 Check it: `systemctl status stockhub-api` and `curl http://localhost/api/health`. Logs: `journalctl -u stockhub-api -n 50`.
 To exclude tickers: edit `Environment=EXCLUDE_TICKERS=ORCL` in `/etc/systemd/system/stockhub-api.service`, then `sudo systemctl daemon-reload && sudo systemctl restart stockhub-api`.
+
+## Troubleshooting
+Run `python check.py KO` (venv active). It prints your Python/yfinance versions and tests each data call, showing exactly which one fails.
+- `YFRateLimitError` / "Too Many Requests": Yahoo is throttling your IP. Wait a few minutes; `pip install -U yfinance` often helps.
+- Every call fails right after install: upgrade with `pip install -U yfinance pandas`.
+The API also prints full error tracebacks in the terminal running `python app.py`.

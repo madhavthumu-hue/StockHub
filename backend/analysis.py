@@ -26,10 +26,54 @@ def _stock(ticker):
         return hit[1], hit[2]
     if len(_cache) > 500:
         _cache.clear()
-    stock = yf.Ticker(ticker)
-    info = stock.info or {}
+    stock, info, err = yf.Ticker(ticker), {}, None
+    for i in range(3):                                   # Yahoo sometimes rate-limits; retry with backoff
+        try:
+            info = dict(stock.info or {})
+            err = None
+            break
+        except Exception as e:
+            err = e
+            time.sleep(1.5 * (i + 1))
+    info = _enrich(stock, info)
+    if err and not _price(info):
+        raise RuntimeError("%s: %s" % (type(err).__name__, str(err)[:150]))
     _cache[ticker] = (time.time(), stock, info)
     return stock, info
+
+
+def _enrich(stock, info):
+    """`stock.info` is often empty or partial. Fill price, dividend rate and ex-dividend date from other endpoints."""
+    if not _price(info):
+        for key in ("last_price", "lastPrice"):
+            try:
+                info["currentPrice"] = float(stock.fast_info[key])
+                break
+            except Exception:
+                pass
+    if not _price(info):
+        try:
+            info["currentPrice"] = float(stock.history(period="5d")["Close"].dropna().iloc[-1])
+        except Exception:
+            pass
+    if not info.get("dividendRate"):
+        try:
+            dv = stock.dividends
+            if dv is not None and len(dv):
+                tot = float(dv[dv.index >= pd.Timestamp.now(tz=dv.index.tz) - pd.Timedelta(days=365)].sum())
+                if tot > 0:
+                    info["dividendRate"] = round(tot, 4)
+        except Exception:
+            pass
+    try:
+        cal = stock.calendar
+        if isinstance(cal, dict):
+            for k, v in (("Ex-Dividend Date", "exDividendDate"), ("Dividend Date", "dividendDate")):
+                if not info.get(v) and cal.get(k):
+                    info[v] = cal[k]
+    except Exception:
+        pass
+    return info
 
 
 def _to_dt(v):
@@ -210,7 +254,7 @@ def analyze_portfolio(df, horizon="weekly"):
         except LookupError as e:
             return None, None, None, str(e)
         except Exception as e:
-            return None, None, None, "%s: data unavailable (%s)" % (t, e.__class__.__name__)
+            return None, None, None, "%s: %s: %s" % (t, e.__class__.__name__, str(e)[:100])
 
     with ThreadPoolExecutor(max_workers=6) as ex:
         out = list(ex.map(work, rows))
