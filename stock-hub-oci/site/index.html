@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stock Investing Hub: Learn Stocks, Options and Covered Calls</title>
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--ink:#10213a;--mute:#56657d;--acc:#0b8f6a;--acc2:#2456d6;--line:#dce3ed;--warn:#b45309;--warnbg:#fff7e6;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1322;--card:#141f35;--ink:#e9eff9;--mute:#9aaac6;--acc:#34d399;--acc2:#7ea2ff;--line:#26385a;--warn:#fbbf24;--warnbg:#2b2210}}
+:root[data-theme="dark"]{--bg:#0b1322;--card:#141f35;--ink:#e9eff9;--mute:#9aaac6;--acc:#34d399;--acc2:#7ea2ff;--line:#26385a;--warn:#fbbf24;--warnbg:#2b2210}
+html{scroll-padding-top:70px;scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--card);border-bottom:1px solid var(--line);z-index:5;display:flex;gap:16px;align-items:center;padding:10px 20px;overflow-x:auto;white-space:nowrap}
+header b{color:var(--acc)}
+header a{color:var(--mute);text-decoration:none;font-size:14px}
+header a:hover{color:var(--ink)}
+main{max-width:1000px;margin:0 auto;padding:0 20px 60px}
+.hero{padding:56px 0 28px}
+.hero h1{font-size:clamp(30px,5vw,50px);line-height:1.08;margin:0 0 14px;max-width:20ch}
+.hero p{font-size:18px;color:var(--mute);max-width:56ch;margin:0 0 18px}
+.btn{display:inline-block;background:var(--acc2);color:#fff;border:0;border-radius:9px;padding:10px 18px;font-size:15px;cursor:pointer;text-decoration:none;margin:0 8px 8px 0}
+.btn.alt{background:transparent;color:var(--acc2);border:1px solid var(--acc2)}
+section{padding-top:36px}
+h2{font-size:clamp(24px,3.5vw,32px);margin:0 0 6px}
+.sub{color:var(--mute);margin:0 0 18px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h3{margin:0 0 8px;font-size:18px}
+.card ol,.card ul{margin:6px 0 0;padding-left:20px;color:var(--mute)}
+.card li{margin-bottom:5px}
+.card p{margin:6px 0;color:var(--mute)}
+.warn{background:var(--warnbg);border:1px solid var(--warn);border-radius:12px;padding:12px 16px;color:var(--ink);font-size:14px;margin:16px 0}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mute);font-weight:600;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+input,select{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:14px;max-width:100%}
+input[type=number]{width:84px}
+.ctl{display:flex;flex-wrap:wrap;gap:14px;align-items:end;margin-bottom:14px}
+.ctl label{display:flex;flex-direction:column;font-size:13px;color:var(--mute);gap:4px}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.kpi b{display:block;font-size:24px;color:var(--acc)}
+.kpi span{font-size:13px;color:var(--mute)}
+.pill{display:inline-block;padding:1px 8px;border-radius:99px;background:var(--bg);border:1px solid var(--line);font-size:12px;color:var(--mute)}
+footer{border-top:1px solid var(--line);padding:24px 20px;text-align:center;color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+<header><b>Stock Investing Hub</b><a href="#basics">Stock basics</a><a href="#options">Options</a><a href="#cc">Covered calls</a><a href="#expiry">Expirations</a><a href="#plan">Income planner</a><a href="#analyzer">Holdings analyzer</a></header>
+<main>
+<div class="hero">
+<h1>Learn to invest, trade and earn income from stocks</h1>
+<p>Plain-English guides to stocks, options and covered calls, worked examples of spreading capital for dividend and premium income, and a tool that suggests covered call ideas for the holdings you upload.</p>
+<a class="btn" href="#basics">Start learning</a><a class="btn alt" href="#analyzer">Analyze my holdings</a>
+<div class="warn"><b>Educational use only.</b> This site is not financial, tax or legal advice. Investing involves risk, including loss of principal. Option strategies carry additional risks and are not suitable for everyone. Figures are illustrative estimates, not quotes or guarantees.</div>
+</div>
+
+<section id="basics"><h2>1. Stock trading basics</h2><p class="sub">The foundation before you touch options.</p>
+<div class="grid">
+<div class="card"><h3>Getting started</h3><ol><li>Open a brokerage account (taxable, IRA or Roth IRA).</li><li>Fund it by bank transfer.</li><li>Search a ticker, review price, volume and fundamentals.</li><li>Place an order and confirm the details.</li><li>Track, rebalance and keep records for taxes.</li></ol></div>
+<div class="card"><h3>Order types</h3><ul><li><b>Market:</b> buys now at the best available price. Fast, but the price can slip.</li><li><b>Limit:</b> buys or sells only at your price or better. Preferred for most trades.</li><li><b>Stop / stop-limit:</b> triggers when price hits a level, to cap losses.</li><li><b>Day vs GTC:</b> expires today, or stays open until canceled.</li></ul></div>
+<div class="card"><h3>Core principles</h3><ul><li>Diversify across companies, sectors and asset types.</li><li>Broad index ETFs are a low-cost core holding.</li><li>Size positions so one loss cannot hurt you badly.</li><li>Dividend yield is only one part of total return.</li><li>Only invest money you will not need soon.</li></ul></div>
+</div></section>
+
+<section id="options"><h2>2. Options trading basics</h2><p class="sub">An option is a contract on 100 shares of a stock.</p>
+<div class="grid">
+<div class="card"><h3>Key terms</h3><ul><li><b>Call:</b> right to buy at the strike price. <b>Put:</b> right to sell.</li><li><b>Strike:</b> the agreed price. <b>Expiration:</b> the last day the contract is valid.</li><li><b>Premium:</b> the price of the option, quoted per share (x100 per contract).</li><li><b>In / at / out of the money:</b> whether the strike is below, near or above the stock price (for calls).</li><li><b>Delta:</b> roughly the option's sensitivity to the stock price, and a rough chance of finishing in the money.</li></ul></div>
+<div class="card"><h3>How to place an options trade</h3><ol><li>Apply for options approval with your broker (level needed varies).</li><li>Open the option chain for a ticker.</li><li>Pick expiration, then strike.</li><li>Choose the action: Buy to Open, Sell to Open, Buy to Close or Sell to Close.</li><li>Use a <b>limit order</b> near the mid price between bid and ask.</li></ol></div>
+<div class="card"><h3>Risks to respect</h3><ul><li>Bought options can expire worthless: you can lose 100% of the premium.</li><li>Time decay (theta) works against buyers and for sellers.</li><li>Selling uncovered options can mean large losses. Beginners should stay with defined-risk or covered strategies.</li><li>Wide bid/ask spreads on thin options quietly cost money.</li></ul></div>
+</div></section>
+
+<section id="cc"><h2>3. Covered calls, step by step</h2><p class="sub">Own 100 shares, sell a call against them, collect the premium.</p>
+<div class="grid">
+<div class="card"><h3>How it works</h3><ol><li>Own at least 100 shares of a stock you are willing to sell.</li><li>Sell to Open one call per 100 shares, usually out of the money.</li><li>Collect the premium immediately.</li><li>At expiration, three things can happen (see right).</li></ol><p><b>Example:</b> You own 100 shares of XYZ at $50. Sell a 1-month $53 call for $0.90. You receive $90.</p></div>
+<div class="card"><h3>Possible outcomes</h3><ul><li><b>Stock stays below $53:</b> call expires worthless. You keep the shares and the $90. Repeat.</li><li><b>Stock rises above $53:</b> shares are called away at $53. You earn $300 stock gain plus $90 premium = $390 maximum.</li><li><b>Stock falls:</b> you keep the premium, which cushions the loss. Breakeven is $49.10, but the shares can still lose value.</li></ul></div>
+<div class="card"><h3>Trade-offs and checks</h3><ul><li>Upside is capped at the strike plus premium.</li><li>Check <b>earnings and ex-dividend dates</b> before expiry. Early assignment risk rises before ex-dividend dates.</li><li>Selling lower strikes pays more but is more likely to be assigned.</li><li><b>Rolling:</b> buy back the call and sell a later or higher one.</li><li>Assignment can trigger taxable gains. Check tax rules for your account.</li></ul></div>
+</div></section>
+
+<section id="expiry"><h2>Weekly vs monthly vs quarterly expirations</h2><p class="sub">Shorter is not simply better. Compare the trade-offs.</p>
+<div class="tw"><table><tr><th></th><th>Weekly (about 7 days)</th><th>Monthly (about 30 days)</th><th>Quarterly (about 90 days)</th></tr>
+<tr><td><b>Premium collected</b></td><td>Smallest per trade</td><td>Moderate</td><td>Largest per trade</td></tr>
+<tr><td><b>Time decay</b></td><td>Fastest per day</td><td>Steady</td><td>Slowest per day</td></tr>
+<tr><td><b>Effort and fees</b></td><td>High: trade up to 52 times a year</td><td>Medium: about 12 times</td><td>Low: about 4 times</td></tr>
+<tr><td><b>Assignment risk</b></td><td>Re-decided every week</td><td>Moderate</td><td>Stock can run far past the strike</td></tr>
+<tr><td><b>Flexibility</b></td><td>Adapts quickly to price moves</td><td>Good balance</td><td>Locked in longer</td></tr>
+<tr><td><b>Often suits</b></td><td>Active, experienced traders</td><td>Most beginners and income investors</td><td>Hands-off, or lower-volatility holdings</td></tr></table></div></section>
+
+<section id="plan"><h2>4. Spreading capital for income</h2><p class="sub">Edit the starting amount, allocations and yield assumptions to see estimated cash income from dividends and covered calls.</p>
+<div class="ctl"><label>Capital ($)<input type="number" id="cap" value="100000" step="1000" style="width:120px"></label>
+<label>Share of stock holdings written with calls (%)<input type="number" id="cov" value="50"></label>
+<label>Avg premium per month (% of stock value)<input type="number" id="prem" value="0.8" step="0.1"></label></div>
+<div class="tw"><table id="alloc"></table></div>
+<div class="kpis" id="plankpi"></div>
+<div class="warn">Assumptions are illustrative. Real dividends can be cut, prices fall, and premium varies with volatility. Covered calls cap upside. Allocation shown must total 100%.</div>
+<div class="grid"><div class="card"><h3>Example: $100,000 income-oriented mix</h3><ul><li>40% broad index ETFs (growth and low cost)</li><li>25% dividend growth stocks</li><li>15% higher-yield income ETFs</li><li>20% T-bills or high-yield savings (stability, cash for opportunities)</li></ul></div>
+<div class="card"><h3>Why spread it?</h3><ul><li>Different holdings fail at different times.</li><li>Only write calls on stocks you are happy to sell.</li><li>Keep a cash buffer so you never sell at a bad time.</li><li>Limit any single stock to a size you can afford to lose.</li></ul></div></div></section>
+
+<section id="analyzer"><h2>5. Covered call analyzer for your holdings</h2>
+<p class="sub">Upload a CSV with columns like <span class="pill">symbol</span> <span class="pill">shares</span> <span class="pill">price</span> (price optional, you can edit it). Your file is processed in your browser and is never uploaded anywhere.</p>
+<div class="ctl"><label>Holdings CSV<input type="file" id="file" accept=".csv,.txt"></label><button class="btn alt" id="sample">Load sample</button>
+<label>Expiration<select id="exp"><option value="7">Weekly (7 days)</option><option value="30" selected>Monthly (30 days)</option><option value="90">Quarterly (90 days)</option></select></label>
+<label>Style<select id="sty"><option value="0.40">Income (more premium, ~40 delta)</option><option value="0.30" selected>Balanced (~30 delta)</option><option value="0.15">Growth-friendly (~15 delta)</option></select></label>
+<label>Assumed volatility (%)<input type="number" id="iv" value="30"></label></div>
+<div class="tw"><table id="res"><tr><td>Upload a CSV or load the sample to begin.</td></tr></table></div>
+<div class="kpis" id="resk"></div>
+<div class="warn"><b>How the estimates work:</b> strikes and premiums come from the Black-Scholes model using your assumed volatility and a 4.5% risk-free rate. They are not live quotes. Check the real option chain at your broker (bid/ask, open interest, earnings and ex-dividend dates) before trading. Only whole 100-share lots can be covered.</div></section>
+</main>
+<footer>Stock Investing Hub. Educational content only, not investment advice. Past performance does not guarantee future results.</footer>
+<script>
+var $=function(i){return document.getElementById(i)};
+var money=function(v){return '$'+Math.round(v).toLocaleString()};
+var money2=function(v){return '$'+v.toFixed(2)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+/* ---- Income planner ---- */
+var B=[{n:'Broad index ETFs',a:40,y:1.3,eq:1},{n:'Dividend growth stocks',a:25,y:3,eq:1},{n:'Higher-yield income ETFs',a:15,y:5,eq:1},{n:'T-bills / cash',a:20,y:4.3,eq:0}];
+function drawAlloc(){var h='<tr><th>Bucket</th><th>Allocation %</th><th>Yield %</th><th class="n">Amount</th><th class="n">Annual dividends/interest</th></tr>';
+B.forEach(function(b,i){h+='<tr><td>'+b.n+'</td><td><input type="number" data-i="'+i+'" data-k="a" value="'+b.a+'"></td><td><input type="number" step="0.1" data-i="'+i+'" data-k="y" value="'+b.y+'"></td><td class="n" id="am'+i+'"></td><td class="n" id="dv'+i+'"></td></tr>'});
+$('alloc').innerHTML=h;$('alloc').querySelectorAll('input').forEach(function(e){e.oninput=function(){B[+e.dataset.i][e.dataset.k]=+e.value||0;calc()}});}
+function calc(){var cap=+$('cap').value||0,cov=(+$('cov').value||0)/100,pm=(+$('prem').value||0)/100,tot=0,div=0,eqv=0;
+B.forEach(function(b,i){var amt=cap*b.a/100,d=amt*b.y/100;tot+=b.a;div+=d;if(b.eq)eqv+=amt;$('am'+i).textContent=money(amt);$('dv'+i).textContent=money(d)});
+var cc=eqv*cov*pm*12,all=div+cc;
+$('plankpi').innerHTML=k('Dividends and interest / yr',money(div))+k('Covered call premium / yr (est.)',money(cc))+k('Total income / yr',money(all))+k('Per month',money(all/12))+k('Income yield on capital',(cap?all/cap*100:0).toFixed(2)+'%')+(Math.round(tot)!==100?k('Allocation total',tot+'% (should be 100%)'):'');}
+function k(t,v){return '<div class="kpi"><b>'+v+'</b><span>'+t+'</span></div>'}
+['cap','cov','prem'].forEach(function(i){$(i).oninput=calc});drawAlloc();calc();
+/* ---- Option math ---- */
+function N(x){var t=1/(1+0.2316419*Math.abs(x)),d=0.3989423*Math.exp(-x*x/2),p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return x>0?1-p:p}
+var R=0.045;
+function d1(S,K,T,s){return (Math.log(S/K)+(R+s*s/2)*T)/(s*Math.sqrt(T))}
+function call(S,K,T,s){var a=d1(S,K,T,s);return S*N(a)-K*Math.exp(-R*T)*N(a-s*Math.sqrt(T))}
+function strikeFor(S,T,s,dl){var lo=S*0.8,hi=S*2;for(var i=0;i<50;i++){var m=(lo+hi)/2;if(N(d1(S,m,T,s))>dl)lo=m;else hi=m}return (lo+hi)/2}
+function snap(K,S){var st=S<25?0.5:S<200?1:2.5;return Math.max(st,Math.round(K/st)*st)}
+/* ---- Analyzer ---- */
+var H=[];
+function parse(txt){var L=txt.split(/\r?\n/).filter(function(x){return x.trim()});if(!L.length)return [];
+var sp=function(l){return l.split(',').map(function(c){return c.replace(/["$\s]/g,'')})},hd=sp(L[0]).map(function(x){return x.toLowerCase()});
+var f=function(re){return hd.findIndex(function(h){return re.test(h)})},hasH=hd.some(function(h){return /symbol|ticker|shares|quantity|qty/.test(h)});
+var is=hasH?f(/symbol|ticker/):0,iq=hasH?f(/shares|quantity|qty/):1,ip=hasH?f(/price|last/):2;if(is<0)is=0;if(iq<0)iq=1;
+return L.slice(hasH?1:0).map(function(l){var c=sp(l),sh=parseFloat((c[iq]||'').replace(/,/g,'')),pr=ip>=0?parseFloat(c[ip]):NaN;return {sym:(c[is]||'').toUpperCase(),sh:sh,px:isNaN(pr)?0:pr}}).filter(function(r){return r.sym&&r.sh>0});}
+function run(){var T=+$('exp').value/365,dl=+$('sty').value,iv0=(+$('iv').value||30)/100,days=+$('exp').value;
+var h='<tr><th>Symbol</th><th class="n">Shares</th><th class="n">Price ($)</th><th class="n">Contracts</th><th class="n">Suggested strike</th><th class="n">Est. premium/share</th><th class="n">Total premium</th><th class="n">Return, period</th><th class="n">Annualized</th><th class="n">Chance called away</th><th class="n">Max gain if called</th><th class="n">Breakeven</th></tr>',tp=0,tv=0,tc=0;
+H.forEach(function(r,i){var ct=Math.floor(r.sh/100);h+='<tr><td><b>'+esc(r.sym)+'</b></td><td class="n">'+r.sh+'</td><td class="n"><input type="number" step="0.01" value="'+(r.px||'')+'" data-i="'+i+'" placeholder="enter"></td>';
+if(!r.px){h+='<td colspan="9">Enter a price to analyze.</td></tr>';return}
+if(!ct){h+='<td colspan="9">Needs 100 shares to cover one contract ('+(100-r.sh)+' more).</td></tr>';return}
+var K=snap(strikeFor(r.px,T,iv0,dl),r.px);if(K<=r.px)K=snap(r.px*1.01,r.px)+0;var p=call(r.px,K,T,iv0),tot=p*100*ct,ret=p/r.px,pc=N(d1(r.px,K,T,iv0)-iv0*Math.sqrt(T)),mg=((K-r.px)+p)*100*ct;
+tp+=tot;tv+=r.px*100*ct;tc+=ct;
+h+='<td class="n">'+ct+'</td><td class="n">'+money2(K)+' <span class="pill">'+((K/r.px-1)*100).toFixed(1)+'% OTM</span></td><td class="n">'+money2(p)+'</td><td class="n">'+money(tot)+'</td><td class="n">'+(ret*100).toFixed(2)+'%</td><td class="n">'+(ret*365/days*100).toFixed(1)+'%</td><td class="n">'+(pc*100).toFixed(0)+'%</td><td class="n">'+money(mg)+'</td><td class="n">'+money2(r.px-p)+'</td></tr>'});
+$('res').innerHTML=h;$('res').querySelectorAll('input').forEach(function(e){e.onchange=function(){H[+e.dataset.i].px=+e.value||0;run()}});
+$('resk').innerHTML=tc?k('Contracts to sell',tc)+k('Est. premium this period',money(tp))+k('Stock value covered',money(tv))+k('Return on covered value',(tp/tv*100).toFixed(2)+'%')+k('Annualized if repeated',(tp/tv*365/days*100).toFixed(1)+'%'):'';}
+$('file').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){H=parse(String(r.result));if(!H.length){$('res').innerHTML='<tr><td>No holdings found. Use columns: symbol, shares, price.</td></tr>';return}run()};r.readAsText(f)};
+$('sample').onclick=function(){H=parse('symbol,shares,price\nAAPL,200,225\nMSFT,150,430\nKO,500,68\nPLTR,60,40\nT,1000,22');run()};
+['exp','sty','iv'].forEach(function(i){$(i).onchange=function(){if(H.length)run()}});
+</script>
+</body>
+</html>

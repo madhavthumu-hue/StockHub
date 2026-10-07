@@ -1,0 +1,30 @@
+user __NGINX_USER__;
+worker_processes auto;
+error_log /var/log/nginx/error.log warn;
+pid /run/nginx.pid;
+events { worker_connections 1024; }
+http {
+  include /etc/nginx/mime.types;
+  default_type application/octet-stream;
+  access_log /var/log/nginx/access.log;
+  sendfile on;
+  server_tokens off;
+  gzip on;
+  gzip_types text/css application/javascript text/plain application/json image/svg+xml;
+
+  server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name __SERVER_NAME__;
+    root /var/www/stock-hub;
+    index index.html;
+
+    add_header X-Content-Type-Options nosniff always;
+    add_header X-Frame-Options SAMEORIGIN always;
+    add_header Referrer-Policy no-referrer always;
+    add_header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; frame-ancestors 'self'" always;
+
+    location / { try_files $uri $uri/ =404; }
+    location = /healthz { default_type text/plain; return 200 "ok\n"; }
+  }
+}
