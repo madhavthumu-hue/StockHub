@@ -15,7 +15,7 @@ MAX_TICKERS = int(os.getenv("MAX_TICKERS", "60"))
 FILLS = {k: PatternFill("solid", start_color=c, end_color=c) for k, c in {0: "C6EFCE", 1: "FFC000", 2: "FF6666"}.items()}
 CALL_COLS = ["Institution", "Ticker", "Expiration", "Days", "Contracts", "Price", "Strike", "OTM %", "Premium / Share",
              "Bid", "Ask", "Volume", "Open Interest", "IV %", "Total Premium", "Return %", "Annualized %",
-             "Breakeven", "Dividend Risk", "Earnings Risk", "Comments", "Group"]
+             "Breakeven", "Max Gain If Called", "Dividend Risk", "Earnings Risk", "Comments", "Group"]
 _cache = {}
 
 
@@ -127,6 +127,7 @@ def covered_calls(stock, info, ticker, qty, inst, horizon, preview=False):
     d["Return %"] = d["lastPrice"] / price * 100
     d["Annualized %"] = d["Return %"] / days * 365
     d["Breakeven"] = price - d["lastPrice"]
+    d["Max Gain If Called"] = ((d["Strike"] - price) + d["lastPrice"]) * 100 * contracts
     d["Dividend Risk"], d["Earnings Risk"], d["Comments"] = div, earn, comment
     d = d.sort_values("Return %", ascending=False).head(5)
     d["Group"] = range(1, len(d) + 1)
@@ -137,17 +138,23 @@ def covered_calls(stock, info, ticker, qty, inst, horizon, preview=False):
 
 
 # ---------------- single stock ---------------- #
+def holding(stock, info, t, q, inst, horizon, preview=False):
+    """One position, fully derived online: live price, contracts (shares // 100), dividend and call strikes."""
+    price = _price(info)
+    if not price:
+        raise LookupError("No market data found for " + t)
+    d, c = dividend_row(info, t, q, inst), covered_calls(stock, info, t, q, inst, horizon, preview)
+    meta = {"Institution": inst, "Ticker": t, "Name": info.get("shortName") or info.get("longName") or t,
+            "Quantity": q, "Price": price, "Contracts": q // 100, "Leftover Shares": q % 100,
+            "Dividend": json.loads(json.dumps(d, default=str)) if d else None}
+    return meta, d, c
+
+
 def analyze_single(ticker, qty, horizon):
     stock, info = _stock(ticker)
-    if not _price(info):
-        raise LookupError("No market data found for " + ticker)
-    c = records(covered_calls(stock, info, ticker, qty, "", horizon, preview=True))
-    div = dividend_row(info, ticker, qty, "")
-    return {"ticker": ticker, "name": info.get("shortName") or info.get("longName") or ticker,
-            "price": _price(info), "shares": qty, "horizon": horizon,
-            "dividend": json.loads(json.dumps(div, default=str)) if div else None,
-            "calls": c, "expiry": c[0]["Expiration"] if c else None, "days": c[0]["Days"] if c else None,
-            "contracts": qty // 100, "shares_short": max(0, 100 - qty) if qty < 100 else 0}
+    meta, _, c = holding(stock, info, ticker, qty, "", horizon, preview=True)
+    meta["calls"], meta["horizon"] = records(c), horizon
+    return meta
 
 
 # ---------------- portfolio ---------------- #
@@ -198,16 +205,20 @@ def analyze_portfolio(df, horizon="weekly"):
         t, q, i = r
         try:
             stock, info = _stock(t)
-            return dividend_row(info, t, q, i), covered_calls(stock, info, t, q, i, horizon), None
+            meta, d, c = holding(stock, info, t, q, i, horizon)
+            return meta, d, c, None
+        except LookupError as e:
+            return None, None, None, str(e)
         except Exception as e:
-            return None, None, "%s: data unavailable (%s)" % (t, e.__class__.__name__)
+            return None, None, None, "%s: data unavailable (%s)" % (t, e.__class__.__name__)
 
     with ThreadPoolExecutor(max_workers=6) as ex:
         out = list(ex.map(work, rows))
-    skipped += [o[2] for o in out if o[2]]
-    divs = pd.DataFrame([o[0] for o in out if o[0]])
-    cl = [o[1] for o in out if o[1] is not None]
+    skipped += [o[3] for o in out if o[3]]
+    divs = pd.DataFrame([o[1] for o in out if o[1]])
+    cl = [o[2] for o in out if o[2] is not None]
     calls = pd.concat(cl, ignore_index=True) if cl else pd.DataFrame(columns=CALL_COLS)
+    holdings = [(o[0], o[2]) for o in out if o[0]]
     monthly = pd.DataFrame()
     if not divs.empty:
         divs["Month"] = divs["Dividend Date"].dt.strftime("%Y-%m").fillna("Unknown")
@@ -217,7 +228,7 @@ def analyze_portfolio(df, horizon="weekly"):
         monthly = monthly.merge(tot, on="Institution", how="left")
         divs = divs.drop(columns=["Month"])
     return {"dividends": divs, "monthly": monthly, "calls": calls, "pivot": build_pivot(calls),
-            "skipped": skipped, "horizon": horizon}
+            "skipped": skipped, "horizon": horizon, "holdings": holdings}
 
 
 def records(df):
@@ -237,6 +248,7 @@ def summary(res):
 
 def to_json(res):
     return {"horizon": res["horizon"], "summary": summary(res), "dividends": records(res["dividends"]),
+            "holdings": [dict(m, calls=records(c)) for m, c in res["holdings"]],
             "monthly": records(res["monthly"]), "calls": records(res["calls"]), "skipped": res["skipped"]}
 
 

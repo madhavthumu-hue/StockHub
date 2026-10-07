@@ -29,15 +29,18 @@ A.yf.Ticker = Fake
 
 def test_all():
     s = A.analyze_single("KO", 200, "monthly")
-    assert s["days"] == 30 and s["contracts"] == 2 and s["dividend"]["Dividend Yield %"] == 4.0
-    assert s["calls"][0]["Dividend Risk"] is True and all(c["Strike"] > 50 for c in s["calls"])
-    assert A.analyze_single("KO", 40, "weekly")["shares_short"] == 60
+    assert s["calls"][0]["Days"] == 30 and s["Contracts"] == 2 and s["Dividend"]["Dividend Yield %"] == 4.0 and s["Price"] == 50.0
+    assert s["calls"][0]["Dividend Risk"] is True and all(c["Strike"] > 50 for c in s["calls"]) and "Max Gain If Called" in s["calls"][0]
+    x = A.analyze_single("KO", 250, "weekly")
+    assert x["Contracts"] == 2 and x["Leftover Shares"] == 50
+    assert A.analyze_single("KO", 40, "weekly")["Contracts"] == 0
     c = web.app.test_client()
     assert c.get("/api/health").json["ok"]
     assert c.get("/api/stock?ticker=%3Cbad%3E").status_code == 400
     csv = io.BytesIO(b"Institution,Ticker,Quantity\nFid,KO,200\nSch,JNJ,100\nFid,AAPL,50\n")
     r = c.post("/api/portfolio", data={"file": (csv, "p.csv"), "horizon": "weekly"}, content_type="multipart/form-data")
     j = r.json
+    assert len(j["holdings"]) == 3 and j["holdings"][2]["Contracts"] == 0 and j["holdings"][0]["calls"]
     assert r.status_code == 200 and j["summary"]["tickers_with_calls"] == 2 and j["summary"]["quarterly_dividend_income"] > 0, j
     r = c.post("/api/export", data={"file": (io.BytesIO(b"Ticker,Quantity\nKO,200\n"), "p.csv")}, content_type="multipart/form-data")
     x = pd.ExcelFile(io.BytesIO(r.data))
