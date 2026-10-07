@@ -1,11 +1,32 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Holdings analyzer | Stock Investing Hub</title><link rel="stylesheet" href="styles.css"></head><body>
 <header class="site-head"><div class="wrap head-in"><a class="logo" href="index.html"><i>S</i><span>Stock Investing Hub</span></a><nav><a href="index.html">Home</a><a href="stocks.html">Stock basics</a><a href="options.html">Options</a><a href="covered-calls.html">Covered calls</a><a href="planner.html">Income planner</a><a href="analyzer.html" aria-current="page">Holdings analyzer</a></nav></div></header>
-<section class="ph"><div class="wrap"><span class="kick">Step 5</span><h1>Covered call analyzer</h1><p>Upload your holdings and see suggested strikes, premiums and outcomes for weekly, monthly or quarterly expirations.</p></div></section>
-<main class="wrap"><div class="split side"><aside class="card"><h3>1. Your holdings</h3><p>CSV with columns <span class="pill">symbol</span> <span class="pill">shares</span> <span class="pill">price</span> (price optional, editable). Processed in your browser only.</p><input type="file" id="file" accept=".csv,.txt"><p><button class="btn alt" id="sample" type="button">Load sample</button></p>
+<section class="ph"><div class="wrap"><span class="kick">Step 5</span><h1>Covered call analyzer</h1><p>Live dividend and covered call analysis for one stock or your whole portfolio, with weekly, monthly or quarterly expirations.</p></div></section>
+<main class="wrap"><div class="seg" role="tablist" aria-label="Analysis mode"><button data-mode="single" aria-selected="true">Single stock</button><button data-mode="portfolio" aria-selected="false">Upload portfolio</button><button data-mode="offline" aria-selected="false">Offline estimate</button><span class="pill" id="apistatus">Checking live data...</span></div>
+
+<section class="mode" id="m-single"><div class="split side">
+<aside class="card"><h3>Look up one stock</h3><p>Live price, dividend and covered call options for a single ticker.</p>
+<label>Ticker<input type="text" id="sTicker" value="KO" maxlength="10" class="wide" autocomplete="off"></label>
+<label>Shares you own<input type="number" id="sShares" value="200" min="1"></label>
+<label>Expiration<select id="sHz"><option value="weekly">Weekly (~7 days)</option><option value="monthly">Monthly (~30 days)</option><option value="quarterly">Quarterly (~90 days)</option></select></label>
+<button class="btn" id="sGo" type="button">Analyze</button>
+<div class="warn small">Market data is delayed and unofficial. Prices use the last traded option price, so confirm bid/ask at your broker. Educational only.</div></aside>
+<div id="sOut"><div class="card"><p>Enter a ticker and share count, then press Analyze.</p></div></div></div></section>
+
+<section class="mode" id="m-portfolio" hidden><div class="split side">
+<aside class="card"><h3>1. Prepare your file</h3><p>An Excel sheet named <b>Input</b> (or the first sheet) or a CSV with these columns:</p>
+<div class="tw"><table><tr><th>Institution</th><th>Ticker</th><th>Quantity</th></tr><tr><td>Fidelity</td><td>KO</td><td class="n">200</td></tr><tr><td>Schwab</td><td>JNJ</td><td class="n">100</td></tr></table></div>
+<p><a href="/api/template.xlsx">Download Excel template</a> &middot; <a href="#" id="csvT">CSV template</a><br><small>Institution is optional. Up to 60 rows.</small></p>
+<h3>2. Upload and run</h3><input type="file" id="pFile" accept=".xlsx,.csv">
+<label>Expiration<select id="pHz"><option value="weekly">Weekly (~7 days)</option><option value="monthly">Monthly (~30 days)</option><option value="quarterly">Quarterly (~90 days)</option></select></label>
+<button class="btn" id="pGo" type="button">Analyze portfolio</button> <button class="btn alt" id="pXls" type="button">Download Excel report</button>
+<div class="warn small">Your file is sent to this site's server only to look up market data and is not stored.</div></aside>
+<div id="pOut"><div class="card"><p>Upload a file to see dividends, monthly income and covered call ideas, colored by risk.</p></div></div></div></section>
+
+<section class="mode" id="m-offline" hidden><p class="sub">No live data needed. Enter prices yourself and get model-based estimates (Black-Scholes).</p><div class="split side"><aside class="card"><h3>1. Your holdings</h3><p>CSV with columns <span class="pill">symbol</span> <span class="pill">shares</span> <span class="pill">price</span> (price optional, editable). Processed in your browser only.</p><input type="file" id="file" accept=".csv,.txt"><p><button class="btn alt" id="sample" type="button">Load sample</button></p>
 <h3>2. Settings</h3><label>Expiration<select id="exp"><option value="7">Weekly (7 days)</option><option value="30" selected>Monthly (30 days)</option><option value="90">Quarterly (90 days)</option></select></label>
 <label>Style<select id="sty"><option value="0.40">Income (more premium, ~40 delta)</option><option value="0.30" selected>Balanced (~30 delta)</option><option value="0.15">Growth-friendly (~15 delta)</option></select></label>
 <label>Assumed volatility (%)<input type="number" id="iv" value="30"></label>
 <div class="warn small"><b>Estimates only.</b> Strikes and premiums use Black-Scholes with your assumed volatility and a 4.5% risk-free rate, not live quotes. Check the real option chain, earnings and ex-dividend dates before trading. Only whole 100-share lots can be covered.</div></aside>
-<div><div class="kpis" id="resk"></div><div class="tw"><table id="res"><tr><td>Upload a CSV or load the sample to begin.</td></tr></table></div></div></div></main>
-<footer><div class="wrap"><span>Educational content only, not investment advice. Past performance does not guarantee future results.</span><span><a href="stocks.html">Stock basics</a><a href="options.html">Options</a><a href="covered-calls.html">Covered calls</a><a href="planner.html">Income planner</a><a href="analyzer.html">Holdings analyzer</a></span></div></footer><script src="analyzer.js"></script></body></html>
+<div><div class="kpis" id="resk"></div><div class="tw"><table id="res"><tr><td>Upload a CSV or load the sample to begin.</td></tr></table></div></div></div></section></main>
+<footer><div class="wrap"><span>Educational content only, not investment advice. Past performance does not guarantee future results.</span><span><a href="stocks.html">Stock basics</a><a href="options.html">Options</a><a href="covered-calls.html">Covered calls</a><a href="planner.html">Income planner</a><a href="analyzer.html">Holdings analyzer</a></span></div></footer><script src="estimator.js"></script><script src="analyzer.js"></script></body></html>

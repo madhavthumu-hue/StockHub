@@ -12,6 +12,8 @@ http {
   gzip on;
   gzip_types text/css application/javascript text/plain application/json image/svg+xml;
 
+  limit_req_zone $binary_remote_addr zone=api:10m rate=30r/m;
+
   server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -22,7 +24,17 @@ http {
     add_header X-Content-Type-Options nosniff always;
     add_header X-Frame-Options SAMEORIGIN always;
     add_header Referrer-Policy no-referrer always;
-    add_header Content-Security-Policy "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'none'; frame-ancestors 'self'" always;
+    add_header Content-Security-Policy "default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'" always;
+
+    client_max_body_size 2m;
+
+    location /api/ {
+      limit_req zone=api burst=20 nodelay;
+      proxy_pass http://127.0.0.1:8000;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header Host $host;
+      proxy_read_timeout 180s;
+    }
 
     location / { try_files $uri $uri.html $uri/ =404; }
     location = /healthz { default_type text/plain; return 200 "ok\n"; }
