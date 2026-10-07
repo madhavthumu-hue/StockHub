@@ -45,7 +45,15 @@ def test_all():
     r = c.post("/api/export", data={"file": (io.BytesIO(b"Ticker,Quantity\nKO,200\n"), "p.csv")}, content_type="multipart/form-data")
     x = pd.ExcelFile(io.BytesIO(r.data))
     assert {"Summary", "Dividends", "Covered Calls", "Covered Calls Pivot"} <= set(x.sheet_names), x.sheet_names
-    assert c.get("/api/template.xlsx").status_code == 200
+    tpl = c.get("/api/template.xlsx")
+    assert tpl.status_code == 200
+    r = c.post("/api/portfolio", data={"file": (io.BytesIO(tpl.data), "stocks.xlsx"), "horizon": "monthly"}, content_type="multipart/form-data")
+    assert r.status_code == 200 and len(r.json["holdings"]) == 3, r.json
+    r = c.post("/api/export", data={"file": (io.BytesIO(tpl.data), "stocks.xlsx")}, content_type="multipart/form-data")
+    assert r.status_code == 200 and r.data[:2] == b"PK"
+    bom = io.BytesIO("\ufeffTicker,Quantity\nKO,100\n".encode("utf-8"))
+    assert c.post("/api/portfolio", data={"file": (bom, "b.csv")}, content_type="multipart/form-data").status_code == 200
+    assert c.get("/api/health", headers={"Origin": "http://localhost:8080"}).headers["Access-Control-Allow-Origin"] == "http://localhost:8080"
     print("all tests passed")
 
 

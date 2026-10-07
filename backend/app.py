@@ -38,12 +38,22 @@ def read_upload():
     if not f or not f.filename:
         raise ValueError("Attach a .xlsx or .csv file.")
     name = f.filename.lower()
+    raw = io.BytesIO(f.read())                       # pandas needs a seekable buffer, not the upload stream
     if name.endswith(".csv"):
-        return pd.read_csv(f)
+        return pd.read_csv(raw, encoding="utf-8-sig")  # utf-8-sig handles the BOM that Excel adds to CSVs
     if name.endswith(".xlsx"):
-        x = pd.ExcelFile(f)
+        x = pd.ExcelFile(raw)
         return x.parse("Input" if "Input" in x.sheet_names else x.sheet_names[0])
     raise ValueError("Unsupported file type. Use .xlsx or .csv.")
+
+
+@app.after_request
+def local_cors(resp):
+    """Lets the page work when served by a plain local file server (e.g. port 8080) while this API runs on 8000."""
+    o = request.headers.get("Origin", "")
+    if o.startswith(("http://localhost", "http://127.0.0.1")):
+        resp.headers["Access-Control-Allow-Origin"] = o
+    return resp
 
 
 @app.get("/")
