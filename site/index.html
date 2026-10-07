@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stock Investing Hub: Learn Stocks, Options and Covered Calls</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+<div class="brand">📈 Stock Investing Hub</div>
+<nav class="tabs" role="tablist" aria-label="Sections">
+<button role="tab" data-tab="home">Home</button>
+<button role="tab" data-tab="stocks">Stock basics</button>
+<button role="tab" data-tab="options">Options</button>
+<button role="tab" data-tab="covered">Covered calls</button>
+<button role="tab" data-tab="planner">Income planner</button>
+<button role="tab" data-tab="analyzer">Holdings analyzer</button>
+</nav>
+</header>
+<main>
+
+<section class="panel" id="home">
+<div class="hero">
+<div><h1>Learn to invest, trade and earn income from stocks</h1>
+<p>Plain-English guides to stocks, options and covered calls, worked examples of spreading capital for dividend and premium income, and a tool that suggests covered call ideas for the holdings you upload.</p>
+<a class="btn" href="#stocks">Start learning</a><a class="btn alt" href="#analyzer">Analyze my holdings</a></div>
+<div class="warn"><b>Educational use only.</b> This site is not financial, tax or legal advice. Investing involves risk, including loss of principal. Option strategies carry additional risks and are not suitable for everyone. Figures are illustrative estimates, not quotes or guarantees.</div>
+</div>
+<div class="grid g3">
+<a class="tile" href="#stocks"><span>1</span><h3>Stock basics</h3><p>Open an account, place orders, build a diversified core.</p></a>
+<a class="tile" href="#options"><span>2</span><h3>Options</h3><p>Calls, puts, strikes, premiums and the risks to respect.</p></a>
+<a class="tile" href="#covered"><span>3</span><h3>Covered calls</h3><p>Earn premium on shares you own. Weekly vs monthly vs quarterly.</p></a>
+<a class="tile" href="#planner"><span>4</span><h3>Income planner</h3><p>Spread capital across dividends, bonds and call premium.</p></a>
+<a class="tile" href="#analyzer"><span>5</span><h3>Holdings analyzer</h3><p>Upload your holdings and get covered call ideas.</p></a>
+<div class="tile static"><span>✓</span><h3>Private by design</h3><p>Your uploaded file is processed in your browser and never sent anywhere.</p></div>
+</div>
+</section>
+
+<section class="panel" id="stocks">
+<h2>Stock trading basics</h2><p class="sub">The foundation before you touch options.</p>
+<div class="grid g3">
+<div class="card"><h3>Getting started</h3><ol><li>Open a brokerage account (taxable, IRA or Roth IRA).</li><li>Fund it by bank transfer.</li><li>Search a ticker, review price, volume and fundamentals.</li><li>Place an order and confirm the details.</li><li>Track, rebalance and keep records for taxes.</li></ol></div>
+<div class="card"><h3>Order types</h3><ul><li><b>Market:</b> buys now at the best available price. Fast, but the price can slip.</li><li><b>Limit:</b> buys or sells only at your price or better. Preferred for most trades.</li><li><b>Stop / stop-limit:</b> triggers when price hits a level, to cap losses.</li><li><b>Day vs GTC:</b> expires today, or stays open until canceled.</li></ul></div>
+<div class="card"><h3>Core principles</h3><ul><li>Diversify across companies, sectors and asset types.</li><li>Broad index ETFs are a low-cost core holding.</li><li>Size positions so one loss cannot hurt you badly.</li><li>Dividend yield is only one part of total return.</li><li>Only invest money you will not need soon.</li></ul></div>
+</div>
+</section>
+
+<section class="panel" id="options">
+<h2>Options trading basics</h2><p class="sub">An option is a contract on 100 shares of a stock.</p>
+<div class="grid g3">
+<div class="card"><h3>Key terms</h3><ul><li><b>Call:</b> right to buy at the strike price. <b>Put:</b> right to sell.</li><li><b>Strike:</b> the agreed price. <b>Expiration:</b> the last day the contract is valid.</li><li><b>Premium:</b> the option's price per share (x100 per contract).</li><li><b>In / at / out of the money:</b> strike below, near or above the stock price (for calls).</li><li><b>Delta:</b> sensitivity to the stock price, and a rough chance of finishing in the money.</li></ul></div>
+<div class="card"><h3>How to place an options trade</h3><ol><li>Apply for options approval with your broker.</li><li>Open the option chain for a ticker.</li><li>Pick expiration, then strike.</li><li>Choose the action: Buy to Open, Sell to Open, Buy to Close or Sell to Close.</li><li>Use a <b>limit order</b> near the mid price between bid and ask.</li></ol></div>
+<div class="card"><h3>Risks to respect</h3><ul><li>Bought options can expire worthless: you can lose 100% of the premium.</li><li>Time decay (theta) works against buyers and for sellers.</li><li>Selling uncovered options can mean large losses. Beginners should stay with defined-risk or covered strategies.</li><li>Wide bid/ask spreads on thin options quietly cost money.</li></ul></div>
+</div>
+</section>
+
+<section class="panel" id="covered">
+<h2>Covered calls, step by step</h2><p class="sub">Own 100 shares, sell a call against them, collect the premium.</p>
+<div class="grid g3">
+<div class="card"><h3>How it works</h3><ol><li>Own at least 100 shares of a stock you are willing to sell.</li><li>Sell to Open one call per 100 shares, usually out of the money.</li><li>Collect the premium immediately.</li><li>At expiration, one of three things happens.</li></ol><p><b>Example:</b> You own 100 shares of XYZ at $50. Sell a 1-month $53 call for $0.90. You receive $90.</p></div>
+<div class="card"><h3>Possible outcomes</h3><ul><li><b>Stock stays below $53:</b> the call expires worthless. You keep the shares and the $90. Repeat.</li><li><b>Stock rises above $53:</b> shares are called away at $53. Maximum gain is $300 stock gain plus $90 premium = $390.</li><li><b>Stock falls:</b> you keep the premium, which cushions the loss. Breakeven is $49.10, but the shares can still lose value.</li></ul></div>
+<div class="card"><h3>Trade-offs and checks</h3><ul><li>Upside is capped at the strike plus premium.</li><li>Check <b>earnings and ex-dividend dates</b> before expiry. Early assignment risk rises before ex-dividend dates.</li><li>Lower strikes pay more but are more likely to be assigned.</li><li><b>Rolling:</b> buy back the call and sell a later or higher one.</li><li>Assignment can trigger taxable gains. Check tax rules for your account.</li></ul></div>
+</div>
+<h3 class="gap">Weekly vs monthly vs quarterly expirations</h3>
+<div class="tw"><table><tr><th></th><th>Weekly (about 7 days)</th><th>Monthly (about 30 days)</th><th>Quarterly (about 90 days)</th></tr>
+<tr><td><b>Premium collected</b></td><td>Smallest per trade</td><td>Moderate</td><td>Largest per trade</td></tr>
+<tr><td><b>Time decay</b></td><td>Fastest per day</td><td>Steady</td><td>Slowest per day</td></tr>
+<tr><td><b>Effort and fees</b></td><td>High: up to 52 trades a year</td><td>Medium: about 12</td><td>Low: about 4</td></tr>
+<tr><td><b>Assignment risk</b></td><td>Re-decided every week</td><td>Moderate</td><td>Stock can run far past the strike</td></tr>
+<tr><td><b>Flexibility</b></td><td>Adapts quickly to price moves</td><td>Good balance</td><td>Locked in longer</td></tr>
+<tr><td><b>Often suits</b></td><td>Active, experienced traders</td><td>Most beginners and income investors</td><td>Hands-off, lower-volatility holdings</td></tr></table></div>
+</section>
+
+<section class="panel" id="planner">
+<h2>Spreading capital for income</h2><p class="sub">Edit the amount, allocations and yields to estimate cash income from dividends and covered calls.</p>
+<div class="split">
+<div>
+<div class="ctl"><label>Capital ($)<input type="number" id="cap" value="100000" step="1000" class="wide"></label>
+<label>Stock holdings written with calls (%)<input type="number" id="cov" value="50"></label>
+<label>Avg premium per month (% of stock value)<input type="number" id="prem" value="0.8" step="0.1"></label></div>
+<div class="tw"><table id="alloc"></table></div>
+<div class="bar" id="allocbar" aria-hidden="true"></div>
+<div class="legend" id="alloclegend"></div>
+</div>
+<div>
+<div class="kpis one" id="plankpi"></div>
+<div class="card gapsm"><h3>Example: $100,000 income mix</h3><ul><li>40% broad index ETFs (growth, low cost)</li><li>25% dividend growth stocks</li><li>15% higher-yield income ETFs</li><li>20% T-bills or cash (stability and opportunities)</li></ul><p>Only write calls on stocks you are happy to sell, and keep any single stock to a size you can afford to lose.</p></div>
+<div class="warn">Illustrative only. Dividends can be cut, prices fall, and premium varies with volatility. Allocation must total 100%.</div>
+</div></div>
+</section>
+
+<section class="panel" id="analyzer">
+<h2>Covered call analyzer for your holdings</h2>
+<div class="split side">
+<aside class="card">
+<h3>1. Your holdings</h3>
+<p>CSV with columns <span class="pill">symbol</span> <span class="pill">shares</span> <span class="pill">price</span> (price optional, editable). Processed in your browser only.</p>
+<input type="file" id="file" accept=".csv,.txt"><button class="btn alt" id="sample" type="button">Load sample</button>
+<h3>2. Settings</h3>
+<label>Expiration<select id="exp"><option value="7">Weekly (7 days)</option><option value="30" selected>Monthly (30 days)</option><option value="90">Quarterly (90 days)</option></select></label>
+<label>Style<select id="sty"><option value="0.40">Income (more premium, ~40 delta)</option><option value="0.30" selected>Balanced (~30 delta)</option><option value="0.15">Growth-friendly (~15 delta)</option></select></label>
+<label>Assumed volatility (%)<input type="number" id="iv" value="30"></label>
+<div class="warn small"><b>Estimates only.</b> Strikes and premiums use Black-Scholes with your assumed volatility and a 4.5% risk-free rate, not live quotes. Check the real option chain, earnings and ex-dividend dates before trading. Only whole 100-share lots can be covered.</div>
+</aside>
+<div>
+<div class="kpis" id="resk"></div>
+<div class="tw"><table id="res"><tr><td>Upload a CSV or load the sample to begin.</td></tr></table></div>
+</div></div>
+</section>
+
+</main>
+<footer>Educational content only, not investment advice. Past performance does not guarantee future results.</footer>
+<script src="app.js"></script>
+</body>
+</html>
